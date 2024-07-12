@@ -19,6 +19,11 @@ class GameManager {
     addHandler(socket) {
         socket.on('message', (data) => {
             const message = JSON.parse(data.toString());
+            if (message.type === messages_1.CANCEL_GAME) {
+                if (this.pendingUsers === socket) {
+                    this.pendingUsers = null;
+                }
+            }
             if (message.type === messages_1.INIT_GAME) {
                 if (this.pendingUsers) {
                     const game = new Game_1.Game(this.pendingUsers, socket);
@@ -33,6 +38,14 @@ class GameManager {
                 const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
                 if (game) {
                     game.makeMove(socket, message.payload.move);
+                }
+            }
+            if (message.type === "resign") {
+                const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
+                if (game) {
+                    const winner = game.player1 === socket ? 'black' : 'white';
+                    game.player1.send(JSON.stringify({ type: 'game_over', payload: { winner } }));
+                    game.player2.send(JSON.stringify({ type: 'game_over', payload: { winner } }));
                 }
             }
         });

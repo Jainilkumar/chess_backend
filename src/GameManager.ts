@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { INIT_GAME, MOVE } from "./messages";
+import { CANCEL_GAME, INIT_GAME, MOVE } from "./messages";
 import { Game } from "./Game";
 
 export class GameManager {
@@ -23,6 +23,11 @@ export class GameManager {
     private addHandler(socket: WebSocket) {
         socket.on('message', (data) => {
             const message = JSON.parse(data.toString());
+            if(message.type === CANCEL_GAME) {
+                if(this.pendingUsers === socket) {
+                    this.pendingUsers = null;
+                }
+            }
             if (message.type === INIT_GAME ) {
                 if(this.pendingUsers){
                     const game = new Game(this.pendingUsers, socket);
@@ -37,6 +42,14 @@ export class GameManager {
                 const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
                 if(game){
                     game.makeMove(socket, message.payload.move);
+                }
+            }
+            if(message.type === "resign"){
+                const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
+                if(game){
+                    const winner = game.player1 === socket ? 'black' : 'white';
+                    game.player1.send(JSON.stringify({type: 'game_over', payload: {winner}}));
+                    game.player2.send(JSON.stringify({type: 'game_over', payload: {winner}}));
                 }
             }
         }
