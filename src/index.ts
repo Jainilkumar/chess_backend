@@ -1,9 +1,10 @@
 import { WebSocketServer } from 'ws';
 import { GameManager } from './GameManager';
-import { checkWebsite } from './crog';
+
 
 const wss = new WebSocketServer({ port: 10000 });
-checkWebsite();
+const job = require('./cron').job;
+job.start();
 const gameManager = new GameManager(); 
 
 wss.on('connection', function connection(ws) {
