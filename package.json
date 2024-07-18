@@ -13,5 +13,8 @@
     "@types/ws": "^8.5.10",
     "chess.js": "^1.0.0-beta.8",
     "ws": "^8.17.1"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.11"
   }
 }
