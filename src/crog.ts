@@ -1,8 +1,8 @@
-import cron from 'node-cron';
+import { CronJob } from 'cron';
 import axios from 'axios';
 
 // URL of the website to check
-const url = 'https://chess-backend-2.onrender.com/';
+const url = 'https://chess-backend-2.onrender.com';
 
 // Function to check if the website is up
 export const checkWebsite = async () => {
@@ -19,6 +19,9 @@ export const checkWebsite = async () => {
 };
 
 // Schedule the task to run every 14 minutes
-cron.schedule('*/14 * * * *', checkWebsite);
+const job = new CronJob('*/14 * * * *', checkWebsite);
+
+// Start the cron job
+job.start();
 
 console.log('Cron job started, checking website every 14 minutes');

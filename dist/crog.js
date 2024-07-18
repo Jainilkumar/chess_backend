@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkWebsite = void 0;
-const node_cron_1 = __importDefault(require("node-cron"));
+const cron_1 = require("cron");
 const axios_1 = __importDefault(require("axios"));
 // URL of the website to check
-const url = 'https://chess-backend-2.onrender.com/';
+const url = 'https://chess-backend-2.onrender.com';
 // Function to check if the website is up
 const checkWebsite = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -34,5 +34,7 @@ const checkWebsite = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.checkWebsite = checkWebsite;
 // Schedule the task to run every 14 minutes
-node_cron_1.default.schedule('*/14 * * * *', exports.checkWebsite);
+const job = new cron_1.CronJob('*/14 * * * *', exports.checkWebsite);
+// Start the cron job
+job.start();
 console.log('Cron job started, checking website every 14 minutes');
