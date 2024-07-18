@@ -14,10 +14,6 @@ const job = new cron.CronJob('*/14 * * * *', function () {
 	}
   });
 });
-
-job.on('error', (err: { message: any; }) => console.error('Error during Restart:', err.message));
-
-// Export the cron job.
 module.exports = {
   job,
 };
